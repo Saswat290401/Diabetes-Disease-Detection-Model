@@ -1,0 +1,1 @@
+xgb_loaded_model = joblib.load('xgboost_diabetes_model.joblib')

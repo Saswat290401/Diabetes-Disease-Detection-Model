@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diabetes Disease Detection</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <h1>Diabetes Disease Detection</h1>
-    <form id="predictionForm">
+    <form id="diabetesForm">
         <label for="pregnancies">Pregnancies:</label>
         <input type="number" id="pregnancies" name="pregnancies" required><br>
 
@@ -31,42 +32,33 @@
         <label for="age">Age:</label>
         <input type="number" id="age" name="age" required><br>
 
-        <button type="submit">Predict</button>
+        <button type="button" onclick="predictDiabetes()">Predict</button>
     </form>
 
-    <p id="predictionResult"></p>
+    <h2>Result:</h2>
+    <p id="resultText"></p>
 
     <script>
-        const form = document.getElementById('predictionForm');
-        const predictionResult = document.getElementById('predictionResult');
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const formData = new FormData(form);
-            const data = {};
-            formData.forEach((value, key) => {
-                data[key] = value;
-            });
-
-            data['Glucose_BMI_interaction'] = data['glucose'] * data['bmi'];
+        function predictDiabetes() {
+            const formElement = document.getElementById("diabetesForm");
+            const formData = new FormData(formElement);
+            const jsonData = {};
+            formData.forEach((value, key) => jsonData[key] = value);
 
             fetch('/predict', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data),
+                body: JSON.stringify(jsonData)
             })
             .then(response => response.json())
-            .then(result => {
-                predictionResult.textContent = `Predicted Outcome (XGBoost): ${result.xgb_prediction}, Predicted Outcome (Neural Network): ${result.nn_prediction}`;
+            .then(data => {
+                const resultText = document.getElementById('resultText');
+                resultText.innerHTML = `Predicted Outcome (XGBoost): ${data['Predicted Outcome (XGBoost)']}, Predicted Outcome (Neural Network): ${data['Predicted Outcome (Neural Network)']}`;
             })
-            .catch(error => {
-                console.error('Error:', error);
-                predictionResult.textContent = 'Error occurred during prediction.';
-            });
-        });
+            .catch(error => console.error('Error:', error));
+        }
     </script>
 </body>
 </html>

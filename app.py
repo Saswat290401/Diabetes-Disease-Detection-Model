@@ -31,8 +31,8 @@ def predict():
     scaler = StandardScaler()
     sample_data[:, numerical_features] = scaler.fit_transform(sample_data[:, numerical_features])
 
-    # Calculate the Glucose_BMI_interaction feature (glucose at index 1, bmi at index 6)
-    glucose_bmi_interaction = sample_data[:, 1] * sample_data[:, 6]
+    # Calculate the Glucose_BMI_interaction feature
+    glucose_bmi_interaction = sample_data[:, 1] * sample_data[:, 5]
 
     # Concatenate Glucose_BMI_interaction with sample_data
     sample_data_with_interaction = np.concatenate([sample_data, glucose_bmi_interaction.reshape(-1, 1)], axis=1)
@@ -47,14 +47,12 @@ def predict():
     # Convert Neural Network probabilities to binary predictions
     nn_binary_prediction = 1 if nn_predictions[0][0] > 0.5 else 0
 
-    # Convert numeric predictions to meaningful outcomes
-    xgb_outcome = "Safe" if xgb_predictions[0] == 0 else "Take Precautions"
-    nn_outcome = "Safe" if nn_binary_prediction == 0 else "Take Precautions"
+    # Calculate the final combined outcome (XGBoost takes priority)
+    final_outcome = int(xgb_predictions[0]) if xgb_predictions[0] == 0 else nn_binary_prediction
 
     # Prepare the result as JSON
     result = {
-        'Predicted Outcome (XGBoost)': xgb_outcome,
-        'Predicted Outcome (Neural Network)': nn_outcome
+        'Predicted Outcome': final_outcome
     }
 
     return jsonify(result)

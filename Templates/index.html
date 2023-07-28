@@ -4,61 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diabetes Disease Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> 
 </head>
 <body>
-    <h1>Diabetes Disease Detection</h1>
-    <form id="diabetesForm">
-        <label for="pregnancies">Pregnancies:</label>
-        <input type="number" id="pregnancies" name="pregnancies" required><br>
+    <div class="container">
+        <h1>Diabetes Disease Detection</h1>
+        <form id="diabetes-form">
+            <label for="pregnancies">Pregnancies:</label>
+            <input type="number" id="pregnancies" name="pregnancies" required>
 
-        <label for="glucose">Glucose:</label>
-        <input type="number" id="glucose" name="glucose" required><br>
+            <label for="glucose">Glucose:</label>
+            <input type="number" id="glucose" name="glucose" required>
 
-        <label for="bloodPressure">Blood Pressure:</label>
-        <input type="number" id="bloodPressure" name="bloodPressure" required><br>
+            <label for="bloodPressure">Blood Pressure:</label>
+            <input type="number" id="bloodPressure" name="bloodPressure" required>
 
-        <label for="skinThickness">Skin Thickness:</label>
-        <input type="number" id="skinThickness" name="skinThickness" required><br>
+            <label for="skinThickness">Skin Thickness:</label>
+            <input type="number" id="skinThickness" name="skinThickness" required>
 
-        <label for="insulin">Insulin:</label>
-        <input type="number" id="insulin" name="insulin" required><br>
+            <label for="insulin">Insulin:</label>
+            <input type="number" id="insulin" name="insulin" required>
 
-        <label for="bmi">BMI:</label>
-        <input type="number" id="bmi" name="bmi" required><br>
+            <label for="bmi">BMI:</label>
+            <input type="number" id="bmi" name="bmi" required>
 
-        <label for="diabetesPedigreeFunction">Diabetes Pedigree Function:</label>
-        <input type="number" id="diabetesPedigreeFunction" name="diabetesPedigreeFunction" required><br>
+            <label for="diabetesPedigreeFunction">Diabetes Pedigree Function:</label>
+            <input type="number" step="0.001" id="diabetesPedigreeFunction" name="diabetesPedigreeFunction" required>
 
-        <label for="age">Age:</label>
-        <input type="number" id="age" name="age" required><br>
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required>
 
-        <button type="button" onclick="predictDiabetes()">Predict</button>
-    </form>
-
-    <h2>Result:</h2>
-    <p id="resultText"></p>
-
-    <script>
-        function predictDiabetes() {
-            const formElement = document.getElementById("diabetesForm");
-            const formData = new FormData(formElement);
-            const jsonData = {};
-            formData.forEach((value, key) => jsonData[key] = value);
-
-            fetch('/predict', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(jsonData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                const resultText = document.getElementById('resultText');
-                resultText.innerHTML = `Predicted Outcome (XGBoost): ${data['Predicted Outcome (XGBoost)']}, Predicted Outcome (Neural Network): ${data['Predicted Outcome (Neural Network)']}`;
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    </script>
+            <button type="submit">Predict</button>
+        </form>
+        <div id="result">
+            <p id="resultText"></p>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
